@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Product photos – Shagani admin')}"></head>
+<body>
+
+<div th:replace="~{fragments :: header}"></div>
+
+<div class="toast-bar" th:if="${msg != null}" th:text="${msg}">Saved</div>
+<div class="toast-bar error-bar" th:if="${error != null}" th:text="${error}">Error</div>
+
+<main>
+  <section>
+    <div class="wrap">
+      <h2 class="title">Product photos</h2>
+      <p class="sub">
+        <a th:href="@{/admin/orders}">← Orders</a> · JPG, PNG or WebP, up to 5 MB. Use photos you took yourself.
+      </p>
+
+      <div class="grid">
+        <div class="card" th:each="p : ${products}">
+          <div class="thumb" th:style="'background:' + ${p.primaryCat.bg}">
+            <span class="emoji" th:text="${p.primaryCat.emoji}">🫙</span>
+            <img th:if="${p.imageFile != null}" th:src="@{/product-images/{f}(f=${p.imageFile})}" th:alt="${p.name}" loading="lazy">
+          </div>
+          <div class="info">
+            <h3 th:text="${p.name}">Product</h3>
+            <form th:action="@{/admin/products/{id}/photo(id=${p.id})}" method="post" enctype="multipart/form-data">
+              <input type="file" name="file" accept="image/jpeg,image/png,image/webp" required>
+              <button class="add" type="submit" style="margin-top:8px"
+                      th:text="${p.imageFile == null} ? 'Upload photo' : 'Replace photo'">Upload photo</button>
+            </form>
+            <form th:if="${p.imageFile != null}" th:action="@{/admin/products/{id}/photo/delete(id=${p.id})}" method="post">
+              <button class="rm" type="submit">Remove photo</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

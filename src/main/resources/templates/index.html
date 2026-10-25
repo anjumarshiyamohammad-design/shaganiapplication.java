@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Shagani – Homemade Pickles, Snacks and Sweets')}"></head>
+<body>
+
+<div th:replace="~{fragments :: header}"></div>
+
+<div class="toast-bar" th:if="${toast != null}">
+  ✅ <span th:text="${toast}">Added</span> – <a th:href="@{/cart}">View cart</a>
+</div>
+
+<main>
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Homemade taste, delivered to your door</h1>
+        <p>Pickles, sweets, hot snacks, healthy laddus and spice powders – freshly prepared by Shagani in Ellanthakunta, Telangana.</p>
+        <a class="btn" th:href="@{/} + '#shop'">Shop Now</a>
+        <a class="btn ghost" th:href="'https://wa.me/' + ${whatsapp} + '?text=Hello%20Shagani'" target="_blank" rel="noopener">WhatsApp Us</a>
+      </div>
+      <div class="hero-art">🫙🍯🥜</div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2 class="title">Our Categories</h2>
+      <p class="sub">Pick a category to start shopping</p>
+      <div class="cats">
+        <a class="cat" th:each="c : ${cats}" th:href="@{/(cat=${c.key})} + '#shop'">
+          <span th:text="${c.value.emoji}">🫙</span>
+          <b th:text="${c.value.label}">Category</b>
+          <em th:text="${counts[c.key]} + ' products'">0 products</em>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <h2 class="title">Our Best Sellers</h2>
+      <p class="sub">Most loved by our customers</p>
+      <div class="grid">
+        <th:block th:each="p : ${best}">
+          <div th:replace="~{fragments :: card(${p})}"></div>
+        </th:block>
+      </div>
+    </div>
+  </section>
+
+  <section id="shop">
+    <div class="wrap">
+      <h2 class="title">Shop</h2>
+      <p class="sub">All prices in ₹ · choose 250 g, 500 g or 1 kg</p>
+
+      <div class="tools">
+        <div class="filters">
+          <a class="chip" th:classappend="${selected == 'all'} ? 'on'" th:href="@{/} + '#shop'">All</a>
+          <a class="chip" th:each="c : ${cats}" th:classappend="${selected == c.key} ? 'on'"
+             th:href="@{/(cat=${c.key})} + '#shop'" th:text="${c.value.label}">Category</a>
+        </div>
+        <form th:action="@{/}" method="get" class="searchform">
+          <input type="hidden" name="cat" th:value="${selected == 'all' ? '' : selected}">
+          <input class="search" type="search" name="q" th:value="${q}" placeholder="Search products…">
+        </form>
+      </div>
+
+      <div class="grid">
+        <th:block th:each="p : ${products}">
+          <div th:replace="~{fragments :: card(${p})}"></div>
+        </th:block>
+      </div>
+      <p class="empty" th:if="${#lists.isEmpty(products)}">No products found.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap feat">
+      <div class="f"><span>🏡</span><h3>Homemade Taste</h3><p>Prepared in small batches with traditional recipes, just like home.</p></div>
+      <div class="f"><span>✅</span><h3>Authentic Flavour</h3><p>Carefully chosen ingredients for the real taste of Telangana &amp; Andhra kitchens.</p></div>
+      <div class="f"><span>📦</span><h3>Carefully Packed</h3><p>Sealed and packed neatly so your order reaches you fresh.</p></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="about">
+        <div class="pic">👩‍🍳</div>
+        <div>
+          <h2>About Shagani</h2>
+          <p>Welcome to Shagani, based in Ellanthakunta, Telangana. We make pickles, sweets, hot snacks, healthy laddus and spice powders with traditional recipes, so you can enjoy the taste of home-cooked food wherever you are.</p>
+          <p style="margin-top:10px">Place your order on this website, or message us directly on WhatsApp at <b th:text="${phoneDisplay}">8121842939</b>. We accept <b>Cash and UPI</b>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<a th:replace="~{fragments :: wa}"></a>
+
+</body>
+</html>

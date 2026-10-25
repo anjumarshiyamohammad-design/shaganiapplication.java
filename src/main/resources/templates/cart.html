@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Your Cart – Shagani')}"></head>
+<body>
+
+<div th:replace="~{fragments :: header}"></div>
+
+<main>
+  <section>
+    <div class="wrap narrow">
+      <h2 class="title">Your Cart</h2>
+
+      <div th:if="${cart.empty}" class="panel center">
+        <p>Your cart is empty.</p>
+        <p style="margin-top:14px"><a class="btn" th:href="@{/} + '#shop'">Continue shopping</a></p>
+      </div>
+
+      <div th:unless="${cart.empty}">
+        <div class="panel">
+          <div class="it" th:each="it : ${cart.items}">
+            <div>
+              <b th:text="${it.name}">Product</b><br>
+              <small th:text="${it.size.label + ' · ₹' + it.unitPrice + ' each'}">250 g</small>
+              <div class="qty">
+                <form th:action="@{/cart/update}" method="post">
+                  <input type="hidden" name="key" th:value="${it.key}">
+                  <input type="hidden" name="delta" value="-1">
+                  <button type="submit" aria-label="Less">−</button>
+                </form>
+                <span th:text="${it.qty}">1</span>
+                <form th:action="@{/cart/update}" method="post">
+                  <input type="hidden" name="key" th:value="${it.key}">
+                  <input type="hidden" name="delta" value="1">
+                  <button type="submit" aria-label="More">+</button>
+                </form>
+              </div>
+            </div>
+            <div class="right">
+              <b>₹<span th:text="${it.lineTotal}">0</span></b><br>
+              <form th:action="@{/cart/remove}" method="post">
+                <input type="hidden" name="key" th:value="${it.key}">
+                <button type="submit" class="rm">Remove</button>
+              </form>
+            </div>
+          </div>
+          <div class="total"><span>Total</span><span>₹<span th:text="${cart.total}">0</span></span></div>
+          <p class="note">Delivery charges (if any) will be confirmed by us on WhatsApp.</p>
+        </div>
+
+        <form class="panel" th:action="@{/checkout}" th:object="${form}" method="post">
+          <h3>Delivery details</h3>
+
+          <label for="name">Your name</label>
+          <input id="name" type="text" th:field="*{name}" maxlength="100">
+          <p class="err" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+
+          <label for="phone">Phone number</label>
+          <input id="phone" type="tel" th:field="*{phone}" maxlength="15">
+          <p class="err" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></p>
+
+          <label for="address">Delivery address (with pincode)</label>
+          <textarea id="address" rows="3" th:field="*{address}" maxlength="500"></textarea>
+          <p class="err" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
+
+          <label for="payment">Payment</label>
+          <select id="payment" th:field="*{payment}">
+            <option value="Cash">Cash</option>
+            <option value="UPI">UPI</option>
+          </select>
+
+          <button class="order" type="submit">Place order</button>
+          <p class="note">After placing the order, you will get a button to send it to us on WhatsApp.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+<a th:replace="~{fragments :: wa}"></a>
+
+</body>
+</html>

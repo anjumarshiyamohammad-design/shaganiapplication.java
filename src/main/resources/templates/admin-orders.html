@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Orders – Shagani admin')}"></head>
+<body>
+
+<div th:replace="~{fragments :: header}"></div>
+
+<main>
+  <section>
+    <div class="wrap">
+      <h2 class="title">Orders</h2>
+      <p class="sub"><span th:text="${#lists.size(orders)}">0</span> orders · newest first ·
+        <a th:href="@{/admin/products}">Product photos →</a></p>
+
+      <p class="empty" th:if="${#lists.isEmpty(orders)}">No orders yet.</p>
+
+      <div class="panel order-card" th:each="o : ${orders}">
+        <div class="order-head">
+          <div>
+            <b>#<span th:text="${o.id}">1</span></b>
+            · <span th:text="${o.createdAtText}">date</span>
+          </div>
+          <span class="badge" th:classappend="${o.status == 'DONE'} ? 'done'" th:text="${o.status}">NEW</span>
+        </div>
+        <p><b th:text="${o.customerName}">Name</b> ·
+           <a th:href="'tel:' + ${o.phone}" th:text="${o.phone}">phone</a> ·
+           <span th:text="${o.payment}">Cash</span></p>
+        <p class="addr" th:text="${o.address}">Address</p>
+        <pre class="items-pre" th:text="${o.details}">items</pre>
+        <div class="order-foot">
+          <b>Total ₹<span th:text="${o.total}">0</span></b>
+          <form th:action="@{/admin/orders/{id}/toggle(id=${o.id})}" method="post">
+            <button type="submit" class="add" th:text="${o.status == 'DONE'} ? 'Mark as new' : 'Mark as done'">Mark as done</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>

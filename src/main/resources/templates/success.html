@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Order placed – Shagani')}"></head>
+<body>
+
+<div th:replace="~{fragments :: header}"></div>
+
+<main>
+  <section>
+    <div class="wrap narrow">
+      <div class="panel center">
+        <div style="font-size:60px">🎉</div>
+        <h2 class="title">Order placed!</h2>
+        <p>Your order number is <b>#<span th:text="${orderId}">1</span></b> · Total <b>₹<span th:text="${orderTotal}">0</span></b> · Payment: <b th:text="${payment}">Cash</b></p>
+        <p style="margin:16px 0">One last step – send your order to us on WhatsApp so we can confirm it.</p>
+        <a class="order-link" th:href="${waUrl}" target="_blank" rel="noopener">Send order on WhatsApp</a>
+        <p class="note" style="margin-top:14px">We will confirm the final amount, delivery charges and UPI details on WhatsApp. This page will not be shown again if you refresh.</p>
+        <p style="margin-top:18px"><a th:href="@{/}">← Back to shop</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer th:replace="~{fragments :: footer}"></footer>
+
+</body>
+</html>

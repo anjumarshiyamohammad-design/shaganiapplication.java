@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head(title)">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title}">Shagani</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<!-- ============ Top bar + header ============ -->
+<div th:fragment="header">
+  <div class="announce">
+    📞 Order on WhatsApp / call
+    <a th:href="'https://wa.me/' + ${whatsapp}" th:text="${phoneDisplay}">8121842939</a>
+    · Payments: Cash &amp; UPI
+  </div>
+  <header>
+    <div class="wrap bar">
+      <a th:href="@{/}" class="logo"><span>🌶️</span>
+        <div>Shagani<small>Pickles · Snacks · Sweets</small></div>
+      </a>
+      <nav id="nav">
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/} + '#shop'">Shop All</a>
+        <a th:each="c : ${cats}" th:href="@{/(cat=${c.key})} + '#shop'" th:text="${c.value.label}">Category</a>
+        <a th:href="@{/} + '#about'">About us</a>
+      </nav>
+      <div class="row">
+        <a class="cartbtn" th:href="@{/cart}">🛒 <span th:text="${cartCount}">0</span> items · ₹<span th:text="${cartTotal}">0</span></a>
+        <button class="menu-toggle" type="button" aria-label="Menu"
+                onclick="document.getElementById('nav').classList.toggle('open')">☰</button>
+      </div>
+    </div>
+  </header>
+</div>
+
+<!-- ============ Product card ============ -->
+<div th:fragment="card(p)" class="card">
+  <div class="thumb" th:style="'background:' + ${p.primaryCat.bg}">
+    <span class="emoji" th:text="${p.primaryCat.emoji}">🫙</span>
+    <!-- Photos are uploaded by the owner at /admin/products -->
+    <img th:if="${p.imageFile != null}" th:src="@{/product-images/{f}(f=${p.imageFile})}" th:alt="${p.name}" loading="lazy">
+    <span class="tag" th:if="${p.tag != null}" th:text="${p.tag}">New</span>
+    <span class="tag soldout" th:unless="${p.inStock}">Sold out</span>
+  </div>
+  <div class="info">
+    <div class="cname" th:text="${p.categoryLabels}">Veg Pickles</div>
+    <h3 th:text="${p.name}">Product</h3>
+    <div class="price">₹<span th:text="${p.lowestPrice}">0</span> – ₹<span th:text="${p.highestPrice}">0</span></div>
+    <form th:if="${p.inStock}" th:action="@{/cart/add}" method="post" class="row">
+      <input type="hidden" name="id" th:value="${p.id}">
+      <select name="size" aria-label="Size">
+        <option th:each="s : ${p.availableSizes}" th:value="${s.name()}"
+                th:text="${s.label + ' – ₹' + p.priceFor(s)}">250 g</option>
+      </select>
+      <button class="add" type="submit">Add</button>
+    </form>
+    <p th:unless="${p.inStock}" class="cname">Currently out of stock</p>
+  </div>
+</div>
+
+<!-- ============ Footer ============ -->
+<footer th:fragment="footer">
+  <div class="wrap">
+    <div class="fcols">
+      <div>
+        <h4>Company Details</h4>
+        <ul>
+          <li><b>Shagani</b></li>
+          <li>📍 <span th:text="${location}">Ellanthakunta, Telangana</span></li>
+          <li>📞 <a th:href="'tel:+' + ${whatsapp}" th:text="${phoneDisplay}">8121842939</a> (call / WhatsApp)</li>
+          <li>💳 Cash &amp; UPI</li>
+          <li th:if="${fssai != null and !#strings.isEmpty(fssai)}">FSSAI: <span th:text="${fssai}"></span></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Menu</h4>
+        <ul>
+          <li><a th:href="@{/} + '#shop'">Shop All</a></li>
+          <li th:each="c : ${cats}"><a th:href="@{/(cat=${c.key})} + '#shop'" th:text="${c.value.label}">Category</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>How to order</h4>
+        <ul>
+          <li>1. Add items to your cart</li>
+          <li>2. Fill your name, phone &amp; address</li>
+          <li>3. Place the order</li>
+          <li>4. Send it to us on WhatsApp &amp; we confirm</li>
+        </ul>
+      </div>
+    </div>
+    <div class="copy">© 2026 Shagani. All rights reserved.</div>
+  </div>
+</footer>
+
+<a th:fragment="wa" class="wa" th:href="'https://wa.me/' + ${whatsapp} + '?text=Hello%20Shagani'"
+   target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+
+</body>
+</html>
